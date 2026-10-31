@@ -3,6 +3,9 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ProductDetail from "./pages/ProductDetail";
+
+
 
 export default function App() {
   return (
@@ -12,10 +15,13 @@ export default function App() {
         element={
           <ProtectedRoute>
             <Layout />
+            
           </ProtectedRoute>
         }
       >
+        
         <Route path="/" element={<Home />} />
+        <Route path="/products/:id" element={<ProductDetail />} />
       </Route>
     </Routes>
   );
