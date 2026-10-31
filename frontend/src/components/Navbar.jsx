@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const navigate = useNavigate();
-
+ 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
@@ -23,6 +23,7 @@ export default function Navbar() {
         Shop
       </Link>
       <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+        <Link to="/cart" style={{ color: "#fff" }}>Cart</Link>
         <button onClick={handleLogout}>Logout</button>
       </div>
     </nav>

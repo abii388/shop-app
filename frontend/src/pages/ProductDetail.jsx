@@ -7,6 +7,8 @@ export default function ProductDetail() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
     api
@@ -21,6 +23,19 @@ export default function ProductDetail() {
       )
       .finally(() => setLoading(false));
   }, [id]);
+
+  const handleAddToCart = async () => {
+    setMessage("");
+    setAdding(true);
+    try {
+      await api.post("/cart/add/", { product_id: product.id });
+      setMessage("Added to cart.");
+    } catch (err) {
+      setMessage(err.response?.data?.detail || "Could not add to cart.");
+    } finally {
+      setAdding(false);
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error)
@@ -37,7 +52,10 @@ export default function ProductDetail() {
       <h2>{product.name}</h2>
       <p style={{ fontSize: 24, fontWeight: "bold" }}>₹{product.price}</p>
       <p>{product.description}</p>
-      <button>Add to Cart</button>
+      <button onClick={handleAddToCart} disabled={adding}>
+        {adding ? "Adding..." : "Add to Cart"}
+      </button>
+      {message && <p>{message}</p>}
     </div>
   );
 }
