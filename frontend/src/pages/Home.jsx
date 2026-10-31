@@ -28,6 +28,18 @@ export default function Home() {
 
     return () => clearTimeout(timer);
   }, [search]);
+  const handleDelete = async (product) => {
+ 
+  if (!window.confirm(`Delete "${product.name}"? This cannot be undone.`)) return;
+
+  setError("");
+  try {
+    await api.delete(`/products/${product.id}/delete/`);
+    setProducts((prev) => prev.filter((p) => p.id !== product.id));
+  } catch (err) {
+    setError(err.response?.data?.detail || "Could not delete the product.");
+  }
+};
 
   return (
     <div>
@@ -55,7 +67,7 @@ export default function Home() {
           gap: 16,
         }}
       >
-        {!loading && products.map((p) => <ProductCard key={p.id} product={p} />)}
+        {!loading && products.map((p) => <ProductCard key={p.id} product={p}  onDelete={handleDelete} />)}
       </div>
     </div>
   );

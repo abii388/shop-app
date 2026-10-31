@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 const shorten = (text, max = 80) =>
   text.length > max ? text.slice(0, max).trim() + "..." : text;
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product,onDelete }) {
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
 
@@ -24,6 +24,7 @@ export default function ProductCard({ product }) {
           <button onClick={() => navigate(`/admin/products/${product.id}/edit`)}>
             Edit
           </button>
+           <button onClick={() => onDelete(product)}>Delete</button>
         </div>
       )}
     </div>
