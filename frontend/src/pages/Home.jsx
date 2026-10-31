@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import api from "../api/axios";
 import ProductCard from "../components/ProductCard";
 import SearchBar from "../components/SearchBar";
 
 export default function Home() {
+  const user = useSelector((state) => state.auth.user);
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
@@ -29,7 +32,15 @@ export default function Home() {
   return (
     <div>
       <SearchBar value={search} onChange={setSearch} />
-      <h2>Products</h2>
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h2>Products</h2>
+        {user?.is_admin && (
+          <Link to="/admin/products/new">
+            <button>+ Add Product</button>
+          </Link>
+        )}
+      </div>
 
       {loading && <p>Loading products...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}

@@ -1,29 +1,45 @@
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
+import {
+  cartStart,
+  cartFailure,
+  setCart as setCartInStore,
+} from "../store/cartSlice";
 
 export default function Cart() {
+  const dispatch = useDispatch();
   const [cart, setCart] = useState({ items: [], total: "0.00", count: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    dispatch(cartStart());
     api
       .get("/cart/")
-      .then((res) => setCart(res.data))
-      .catch((err) =>
-        setError(err.response?.data?.detail || "Could not load cart.")
-      )
+      .then((res) => {
+        setCart(res.data);
+        dispatch(setCartInStore(res.data));
+      })
+      .catch((err) => {
+        const message = err.response?.data?.detail || "Could not load cart.";
+        setError(message);
+        dispatch(cartFailure(message));
+      })
       .finally(() => setLoading(false));
-  }, []);
+  }, [dispatch]);
 
   const handleRemove = async (itemId) => {
     setError("");
     try {
       const res = await api.delete(`/cart/remove/${itemId}/`);
       setCart(res.data);
+      dispatch(setCartInStore(res.data));
     } catch (err) {
-      setError(err.response?.data?.detail || "Could not remove item.");
+      const message = err.response?.data?.detail || "Could not remove item.";
+      setError(message);
+      dispatch(cartFailure(message));
     }
   };
 
@@ -54,13 +70,17 @@ export default function Cart() {
               {cart.items.map((item) => (
                 <tr key={item.id} style={{ borderBottom: "1px solid #eee" }}>
                   <td style={{ padding: 8 }}>
-                    <Link to={`/products/${item.product.id}`}>{item.product.name}</Link>
+                    <Link to={`/products/${item.product.id}`}>
+                      {item.product.name}
+                    </Link>
                   </td>
                   <td style={{ padding: 8 }}>₹{item.product.price}</td>
                   <td style={{ padding: 8 }}>{item.quantity}</td>
                   <td style={{ padding: 8 }}>₹{item.subtotal}</td>
                   <td style={{ padding: 8 }}>
-                    <button onClick={() => handleRemove(item.id)}>Remove</button>
+                    <button onClick={() => handleRemove(item.id)}>
+                      Remove
+                    </button>
                   </td>
                 </tr>
               ))}

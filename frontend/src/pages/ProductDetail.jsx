@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import api from "../api/axios";
+import { cartFailure, setCart } from "../store/cartSlice";
 
 export default function ProductDetail() {
+  const dispatch = useDispatch();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,8 +21,8 @@ export default function ProductDetail() {
         setError(
           err.response?.status === 404
             ? "Product not found."
-            : "Could not load this product."
-        )
+            : "Could not load this product.",
+        ),
       )
       .finally(() => setLoading(false));
   }, [id]);
@@ -28,10 +31,13 @@ export default function ProductDetail() {
     setMessage("");
     setAdding(true);
     try {
-      await api.post("/cart/add/", { product_id: product.id });
+      const res = await api.post("/cart/add/", { product_id: product.id });
+      dispatch(setCart(res.data));
       setMessage("Added to cart.");
     } catch (err) {
-      setMessage(err.response?.data?.detail || "Could not add to cart.");
+      const message = err.response?.data?.detail || "Could not add to cart.";
+      dispatch(cartFailure(message));
+      setMessage(message);
     } finally {
       setAdding(false);
     }

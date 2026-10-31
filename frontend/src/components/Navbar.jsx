@@ -32,7 +32,7 @@ export default function Navbar() {
       </Link>
       <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
         <Link to="/cart" style={{ color: "#fff" }}>
-          Cart
+          Cart ({count})
         </Link>
 
         <button onClick={handleLogout}>Logout</button>
