@@ -26,7 +26,7 @@ A mini e-commerce application for a small electronics shop.
 | Product detail | Done (API) |
 | Cart: add, view with total, remove | Done (API) |
 | Admin: add, edit, delete products | Done (API, admin only) |
-| React frontend pages | In progress |
+
 
 ---
 
