@@ -1,8 +1,7 @@
+from django.urls import path
+from . import views
 
-# from django.urls import path
-# from .views import 
-
-# urlpatterns = [
-#     path("login/",login_view,name="login"),
- 
-# ]
+urlpatterns = [
+    path("", views.product_list),
+    path("<int:pk>/", views.product_detail),
+]
